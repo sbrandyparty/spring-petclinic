@@ -44,6 +44,9 @@
 
         <cobertura.version>2.7</cobertura.version>
 
+        <!-- jQAssistant and asciidoctor -->
+        <jqassistant.version>1.1.0-RC2-SNAPSHOT</jqassistant.version>
+        <asciidoctor.version>1.5.2.1</asciidoctor.version>
     </properties>
 
     <dependencyManagement>
@@ -389,6 +392,61 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- jQAssistant -->
+            <plugin>
+                <groupId>com.buschmais.jqassistant.scm</groupId>
+                <artifactId>jqassistant-maven-plugin</artifactId>
+                <version>${jqassistant.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>scan</goal>
+                            <goal>analyze</goal>
+                        </goals>
+                        <configuration>
+                            <failOnViolations>false</failOnViolations>
+                            <reportProperties>
+                                <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
+                            </reportProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.buschmais.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.graphml</artifactId>
+                        <version>${jqassistant.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!-- Asciidoctor -->
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>${asciidoctor.version}</version>
+                <executions>
+                    <execution>
+                        <id>jqassistant-rules</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>jqassistant</sourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceDocumentName>index.adoc</sourceDocumentName>
+                    <backend>xhtml5</backend>
+                    <sourceHighlighter>coderay</sourceHighlighter>
+                    <attributes>
+                        <toc>auto</toc>
+                        <toclevels>5</toclevels>
+                    </attributes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -405,6 +463,18 @@
                     </formats>
                     <check/>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.buschmais.jqassistant.scm</groupId>
+                <artifactId>jqassistant-maven-plugin</artifactId>
+                <version>${jqassistant.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>

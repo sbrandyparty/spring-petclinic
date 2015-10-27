@@ -1,0 +1,60 @@
+[[test:Default]]
+[role=group,includesConstraints="junit4:IgnoreWithoutMessage,assertj:TestMethodWithoutAssertion"]
+== Test Rules
+
+The following test rules apply:
+
+- <<assertj:TestMethodWithoutAssertion>>
+- All @Ignore annotations must provide a message
+
+=== Constraints
+
+[[assertj:TestMethodWithoutAssertion]]
+[source,cypher,role=constraint,requiresConcepts="junit4:TestMethod,assertj:AssertMethod,spring.test.web:Assert"]
+.All test methods must perform at least one assertion (within a call hierarchy of max. 3 steps).
+----
+MATCH
+  (testType:Test:Type)-[:DECLARES]->(testMethod:Test:Method)
+WHERE
+  NOT (testMethod)-[:INVOKES*..3]->(:Method:Assert)
+RETURN
+  testType AS DeclaringType,
+  testMethod AS Method
+----
+
+=== Concepts
+
+The following framworks are used to verify assertions:
+
+- AssertJ
+- Spring Web Test
+
+[[assertj:AssertMethod]]
+[source,cypher,role=concept]
+.Mark all assertThat methods of 'org.assertj.core.api.Assertions' with "AssertJ" and "Assert".
+----
+MATCH
+  (assertType:Type)-[:DECLARES]->(assertMethod)
+WHERE
+  assertType.fqn = 'org.assertj.core.api.Assertions'
+  and assertMethod.signature =~ '.* assertThat.*'
+SET
+  assertMethod:AssertJ:Assert
+RETURN
+  assertMethod
+----
+
+[[spring.test.web:Assert]]
+[source,cypher,role=concept]
+.Mark method "org.springframework.test.web.servlet.ResultActions#andExpect" as "Spring" and "Assert".
+----
+MATCH
+  (assertType:Type)-[:DECLARES]->(assertMethod)
+WHERE
+  assertType.fqn = 'org.springframework.test.web.servlet.ResultActions'
+  and assertMethod.signature =~ '.* andExpect.*'
+SET
+  assertMethod:Spring:Assert
+RETURN
+  assertMethod
+----
