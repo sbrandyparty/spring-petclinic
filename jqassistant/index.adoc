@@ -2,6 +2,8 @@
 
 This document describes coding rules for the Spring PetClinic.
 
+NOTE: The rules defined in this and all included documents are for demonstration purposes only and work in progress.
+
 == CI Build ==
 
 The following rule groups are executed during a build:

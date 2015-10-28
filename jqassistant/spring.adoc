@@ -1,5 +1,5 @@
 [[spring:Default]]
-[role=group,includesConcepts="spring:Repository,spring:Controller"]
+[role=group,includesConcepts="spring:Controller,spring:Service,spring:Repository"]
 == Spring Rules
 
 === Constraints
@@ -48,7 +48,23 @@ RETURN
   repository as Repository
 ----
 
+
 ==== Spring MVC
+
+[[spring:Service]]
+[source,cypher,role="concept"]
+.Labels all types annotated with "org.springframework.stereotype.Service" with "Spring" and "Service".
+----
+MATCH
+  (service:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+WHERE
+  annotationType.fqn = "org.springframework.stereotype.Service"
+SET
+  service:Spring:Service
+RETURN
+  service as Service
+----
+
 
 [[spring:Controller]]
 [source,cypher,role="concept"]
@@ -63,3 +79,4 @@ SET
 RETURN
   controller as Controller
 ----
+
