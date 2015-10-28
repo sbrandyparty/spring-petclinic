@@ -1,0 +1,34 @@
+[[structure:Default]]
+[role=group,includesConstraints="dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml"]
+== Structural Rules And Reports
+
+The following constraints are verified:
+
+- Package cycles
+
+The following reports are created:
+
+- <<structure:PackageDependencies.graphml>>
+
+=== Reports
+
+TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
+should apply a layout, e.g. "Layout->Hierarchical".
+
+[[structure:PackageDependencies.graphml]]
+[source,cypher,role=concept]
+.GraphML report about dependencies between packages and their contained types.
+----
+MATCH
+  (package:Package)-[:CONTAINS]->(type:Type)
+OPTIONAL MATCH
+  (type)-[dependsOn:DEPENDS_ON]->(:Type)
+RETURN {
+  role : "graph",
+  parent : package,
+  nodes : collect(type),
+  relationships : collect(dependsOn)
+}
+----
+
+
