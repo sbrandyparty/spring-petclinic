@@ -1,8 +1,0 @@
-[[springdata:Default]]
-[role=group]
-== Spring Data Rules
-
-=== Constraints
-
-=== Concepts
-

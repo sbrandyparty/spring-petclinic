@@ -9,7 +9,7 @@ The following rule groups are verified during a build:
 [[default]]
 [role=group,includesGroups="test:Default"]
 - <<test:Default>>
-- <<springdata:Default>>
+- <<spring:Default>>
 
 include::test.adoc[]
-include::springdata.adoc[]
+include::spring.adoc[]

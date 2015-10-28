@@ -1,0 +1,65 @@
+[[spring:Default]]
+[role=group,includesConcepts="spring:Repository,spring:Controller"]
+== Spring Rules
+
+=== Constraints
+
+=== Concepts
+
+==== Spring Data
+
+[[spring:Repository]]
+[source,cypher,role="concept",requiresConcepts="spring:AnnotatedRepository,spring:ImplementedRepository"]
+.Labels all types annotated with "org.springframework.stereotype.Repository" with "Spring" and "Repository".
+----
+MATCH
+  (repository:Spring:Repository)
+RETURN
+  repository as Repository
+----
+
+[[spring:AnnotatedRepository]]
+[source,cypher,role="concept"]
+.Labels all types annotated with "org.springframework.stereotype.Repository" with "Spring" and "Repository".
+----
+MATCH
+  (repository:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+WHERE
+  annotationType.fqn = "org.springframework.stereotype.Repository"
+SET
+  repository:Spring:Repository
+RETURN
+  repository as Repository
+----
+
+[[spring:ImplementedRepository]]
+[source,cypher,role="concept"]
+.Labels all types implementing "org.springframework.data.repository.Repository" with "Spring" and "Repository".
+----
+MATCH
+  (repository:Type)-[:EXTENDS|IMPLEMENTS*]->(superType:Type)
+WHERE
+  superType.fqn in [
+    "org.springframework.data.repository.Repository"
+  ]
+SET
+  repository:Spring:Repository
+RETURN
+  repository as Repository
+----
+
+==== Spring MVC
+
+[[spring:Controller]]
+[source,cypher,role="concept"]
+.Labels all types annotated with "org.springframework.stereotype.Controller" with "Spring" and "Controller".
+----
+MATCH
+  (controller:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+WHERE
+  annotationType.fqn = "org.springframework.stereotype.Controller"
+SET
+  controller:Spring:Controller
+RETURN
+  controller as Controller
+----
