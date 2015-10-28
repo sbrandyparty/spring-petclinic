@@ -7,7 +7,7 @@ This document describes coding rules for the Spring PetClinic.
 The following rule groups are verified during a build:
 
 [[default]]
-[role=group,includesGroups="test:Default"]
+[role=group,includesGroups="test:Default,spring:Default"]
 - <<test:Default>>
 - <<spring:Default>>
 
