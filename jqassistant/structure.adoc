@@ -35,7 +35,7 @@ RETURN {
 
 [[structure:ClassRoleDependencies.graphml]]
 [source,cypher,role=concept,requiresConcepts="spring:Controller,spring:Service,spring:Repository,java:TypeAssignableFrom"]
-.Actual dependencies between controller, service and repository implementations.
+.Actual usage dependencies between controller, service and repository implementations.
 ----
 WITH
   [
@@ -44,11 +44,13 @@ WITH
     "Repository"
   ] as selectedRoles
 MATCH
-  (type:Type)-[dependsOn:DEPENDS_ON]->(:Interface)-[:ASSIGNABLE_FROM]->(otherType:Type)
+  (type:Type:Spring)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Type:Spring)
 WHERE
   type <> otherType
   and any (role in selectedRoles WHERE role in labels(type))
   and any (role in selectedRoles WHERE role in labels(otherType))
+WITH DISTINCT
+  type, otherType
 RETURN
   type,
   {
@@ -56,5 +58,6 @@ RETURN
     startNode : type,
     endNode : otherType,
     type : "DEPENDS_ON"
-  }
+  },
+  otherType
 ----
