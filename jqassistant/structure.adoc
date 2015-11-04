@@ -1,15 +1,39 @@
 [[structure:Default]]
-[role=group,includesConstraints="dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:ClassRoleDependencies.graphml"]
+[role=group,includesConstraints="dependency:PackageCycles",includesConstraints="structure:ImplementationDependency,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:ClassRoleDependencies.graphml"]
 == Structural Rules And Reports
 
 The following constraints are verified:
 
+- <<structure:ImplementationDependency>>
 - Package cycles
 
 The following GraphML reports are created:
 
 - <<structure:PackageDependencies.graphml>>
 - <<structure:ClassRoleDependencies.graphml>>
+
+=== Constraints
+
+[[structure:ImplementationDependency]]
+[source,cypher,role=constraint,requiresConcepts="spring:Controller,spring:Service,spring:Repository"]
+.There must be no direct dependencies between controller, service and repository implementations, i.e. only dependencies to interfaces are allowed.
+----
+WITH
+  [
+    "Controller",
+    "Service",
+    "Repository"
+  ] as selectedRoles
+MATCH
+  (type:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(otherType:Type)
+WHERE
+  type <> otherType
+  and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
+  and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
+  and not (otherType:Interface)
+RETURN
+  type, otherType
+----
 
 === Reports
 
@@ -34,7 +58,7 @@ RETURN {
 
 
 [[structure:ClassRoleDependencies.graphml]]
-[source,cypher,role=concept,requiresConcepts="spring:Controller,spring:Service,spring:Repository,java:TypeAssignableFrom"]
+[source,cypher,role=concept,requiresConcepts="spring:Controller,spring:Service,spring:Repository"]
 .Actual usage dependencies between controller, service and repository implementations.
 ----
 WITH
@@ -44,11 +68,11 @@ WITH
     "Repository"
   ] as selectedRoles
 MATCH
-  (type:Type:Spring)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Type:Spring)
+  (type:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Type)
 WHERE
   type <> otherType
-  and any (role in selectedRoles WHERE role in labels(type))
-  and any (role in selectedRoles WHERE role in labels(otherType))
+  and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
+  and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
 WITH DISTINCT
   type, otherType
 RETURN
