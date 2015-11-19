@@ -35,15 +35,11 @@ RETURN DISTINCT
   type as Dependent, otherType as InvalidDependency
 ----
 
-=== Reports
+=== Concepts
 
-TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
-should apply a layout, e.g. "Layout->Hierarchical".
-
-
-[[structure:LayerDependencies.graphml]]
+[[structure:LayerDependencies]]
 [source,cypher,role=concept,requiresConcepts="spring:Controller,spring:Service,spring:Repository"]
-.Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
+.Creates a USES relation between application layer items, i.e. controller, service and repository implementations.
 ----
 WITH
   [
@@ -57,16 +53,30 @@ WHERE
   type <> otherType
   and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
   and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
-WITH DISTINCT
-  type, otherType
+MERGE
+  (type)-[:USES]->(otherType)
+RETURN
+  type as Dependent, collect(distinct otherType.fqn) as Dependencies
+----
+
+
+=== Reports
+
+TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
+should apply a layout, e.g. "Layout->Hierarchical".
+
+
+[[structure:LayerDependencies.graphml]]
+[source,cypher,role=concept,requiresConcepts="structure:LayerDependencies"]
+.Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
+----
+MATCH
+  (type:Type)-[uses:USES]->(otherType:Type)
+WHERE
+  type <> otherType
 RETURN
   type as Dependent,
-  {
-    role : "relationship",
-    startNode : type,
-    endNode : otherType,
-    type : "DEPENDS_ON"
-  } as DependencyRelation,
+  uses as Uses,
   otherType as Dependency
 ----
 
