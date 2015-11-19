@@ -1,10 +1,13 @@
 [[structure:Default]]
-[role=group,includesConstraints="dependency:PackageCycles",includesConstraints="structure:ImplementationDependency,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:LayerDependencies.graphml"]
+[role=group,includesConstraints="structure:ControllerDependencies,structure:ServiceDependencies,structure:RepositoryDependencies,structure:ImplementationDependencies,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:LayerDependencies.graphml"]
 == Structural Rules And Reports
 
 The following constraints are verified:
 
-- <<structure:ImplementationDependency>>
+- <<structure:ControllerDependencies>>
+- <<structure:ServiceDependencies>>
+- <<structure:RepositoryDependencies>>
+- <<structure:ImplementationDependencies>>
 - Package cycles
 
 The following GraphML reports are created:
@@ -14,7 +17,63 @@ The following GraphML reports are created:
 
 === Constraints
 
-[[structure:ImplementationDependency]]
+The application consists of the following layers:
+
+- UI: Controller implementations
+- Logic: Service implementations
+- Persistence: Repositories (JDBC, JPA or Spring Data)
+
+The following sections describe restrictions on dependencies are between layers:
+
+
+==== UI
+
+[[structure:ControllerDependencies]]
+[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+.A controller must only have dependencies to services (e.g. direct usage of repositories is not allowed).
+----
+MATCH
+  (type:Type:Spring:Controller)-[:USES]->(otherType:Spring:Type)
+WHERE NOT
+  otherType:Service
+RETURN DISTINCT
+  type as InvalidController, otherType as Dependency
+----
+
+
+==== Logic
+
+[[structure:ServiceDependencies]]
+[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+.A service must only have dependencies to repositories (e.g. usage of controller is not allowed).
+----
+MATCH
+  (type:Type:Spring:Service)-[:USES]->(otherType:Spring:Type)
+WHERE NOT
+  otherType:Repository
+RETURN DISTINCT
+  type as InvalidService, otherType as Dependency
+----
+
+
+==== Persistence
+
+[[structure:RepositoryDependencies]]
+[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+.A repository service can only have dependencies to other repositories.
+----
+MATCH
+  (type:Type:Spring:Repository)-[:USES]->(otherType:Spring:Type)
+WHERE NOT
+  otherType:Repository
+RETURN DISTINCT
+  type as InvalidRepository, otherType as Dependency
+----
+
+
+==== Decoupling By Interfaces
+
+[[structure:ImplementationDependencies]]
 [source,cypher,role=constraint,requiresConcepts="spring:Controller,spring:Service,spring:Repository"]
 .There must be no direct dependencies between controller, service and repository implementations, i.e. only dependencies to interfaces are allowed.
 ----
@@ -35,6 +94,7 @@ RETURN DISTINCT
   type as Dependent, otherType as InvalidDependency
 ----
 
+
 === Concepts
 
 [[structure:LayerDependencies]]
@@ -48,7 +108,7 @@ WITH
     "Repository"
   ] as selectedRoles
 MATCH
-  (type:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Type)
+  (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Spring:Type)
 WHERE
   type <> otherType
   and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
@@ -71,7 +131,7 @@ should apply a layout, e.g. "Layout->Hierarchical".
 .Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
 ----
 MATCH
-  (type:Type)-[uses:USES]->(otherType:Type)
+  (type:Spring:Type)-[uses:USES]->(otherType:Spring:Type)
 WHERE
   type <> otherType
 RETURN
