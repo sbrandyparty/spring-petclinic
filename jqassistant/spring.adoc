@@ -1,5 +1,3 @@
-[[spring:Default]]
-[role=group,includesConcepts="spring:Controller,spring:Service,spring:Repository"]
 == Spring Rules
 
 This document defines concepts related to the Spring Framework.

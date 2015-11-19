@@ -9,8 +9,8 @@ The following constraints are verified:
 
 The following GraphML reports are created:
 
+- <<structure:LayerDependencies.graphml>>
 - <<structure:PackageDependencies.graphml>>
-- <<structure:ClassRoleDependencies.graphml>>
 
 === Constraints
 
@@ -40,26 +40,10 @@ RETURN
 TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
 should apply a layout, e.g. "Layout->Hierarchical".
 
-[[structure:PackageDependencies.graphml]]
-[source,cypher,role=concept]
-.Dependencies between packages and their contained types.
-----
-MATCH
-  (package:Package)-[:CONTAINS]->(type:Type)
-OPTIONAL MATCH
-  (type)-[dependsOn:DEPENDS_ON]->(:Type)
-RETURN {
-  role : "graph",
-  parent : package,
-  nodes : collect(type),
-  relationships : collect(dependsOn)
-}
-----
 
-
-[[structure:ClassRoleDependencies.graphml]]
+[[structure:LayerDependencies.graphml]]
 [source,cypher,role=concept,requiresConcepts="spring:Controller,spring:Service,spring:Repository"]
-.Actual usage dependencies between controller, service and repository implementations.
+.Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
 ----
 WITH
   [
@@ -76,12 +60,29 @@ WHERE
 WITH DISTINCT
   type, otherType
 RETURN
-  type,
+  type as Dependent,
   {
     role : "relationship",
     startNode : type,
     endNode : otherType,
     type : "DEPENDS_ON"
-  },
-  otherType
+  } as DependencyRelation,
+  otherType as Dependency
+----
+
+
+[[structure:PackageDependencies.graphml]]
+[source,cypher,role=concept]
+.Dependencies between packages and their contained types.
+----
+MATCH
+  (package:Package)-[:CONTAINS]->(type:Type)
+OPTIONAL MATCH
+  (type)-[dependsOn:DEPENDS_ON]->(:Type)
+RETURN {
+  role : "graph",
+  parent : package,
+  nodes : collect(type),
+  relationships : collect(dependsOn)
+}
 ----
