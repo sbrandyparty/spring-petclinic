@@ -1,5 +1,5 @@
 [[structure:Default]]
-[role=group,includesConstraints="dependency:PackageCycles",includesConstraints="structure:ImplementationDependency,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:ClassRoleDependencies.graphml"]
+[role=group,includesConstraints="dependency:PackageCycles",includesConstraints="structure:ImplementationDependency,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:LayerDependencies.graphml"]
 == Structural Rules And Reports
 
 The following constraints are verified:
@@ -31,8 +31,8 @@ WHERE
   and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
   and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
   and not (otherType:Interface)
-RETURN
-  type, otherType
+RETURN DISTINCT
+  type as Dependent, otherType as InvalidDependency
 ----
 
 === Reports
