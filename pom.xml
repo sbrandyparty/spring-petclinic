@@ -406,6 +406,11 @@
                         </goals>
                         <configuration>
                             <failOnViolations>false</failOnViolations>
+                            <!--
+                            <groups>
+                                <group>default</group>
+                            </groups>
+                            -->
                             <reportProperties>
                                 <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
                             </reportProperties>

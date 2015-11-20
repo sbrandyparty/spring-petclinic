@@ -8,7 +8,7 @@ This document defines concepts related to the Spring Framework.
 
 [[spring:Repository]]
 [source,cypher,role="concept",requiresConcepts="spring:AnnotatedRepository,spring:ImplementedRepository"]
-.Labels all types annotated with "org.springframework.stereotype.Repository" with "Spring" and "Repository".
+.Returns all repositories.
 ----
 MATCH
   (repository:Spring:Repository)
