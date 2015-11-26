@@ -9,12 +9,17 @@ NOTE: The rules defined in this and all included documents are for demonstration
 The following rule groups are executed during a build:
 
 [[default]]
-[role=group,includesGroups="structure:Default,model:Default,test:Default"]
+[role=group,includesGroups="structure:Default,model:Default,management:Default,test:Default"]
 - <<structure:Default>>
 - <<model:Default>>
+- <<management:Default>>
 - <<test:Default>>
 
 include::structure.adoc[]
 include::model.adoc[]
+include::management.adoc[]
 include::test.adoc[]
-include::spring.adoc[]
+include::spring-mvc.adoc[]
+include::spring-data.adoc[]
+include::spring-jmx.adoc[]
+

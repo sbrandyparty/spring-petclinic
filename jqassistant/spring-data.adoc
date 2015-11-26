@@ -1,0 +1,46 @@
+== Spring Data Rules
+
+This document defines concepts related to the Spring Data Framework.
+
+=== Concepts
+
+[[spring-data:Repository]]
+[source,cypher,role="concept",requiresConcepts="spring-data:AnnotatedRepository,spring-data:ImplementedRepository"]
+.Returns all repositories.
+----
+MATCH
+  (repository:Spring:Repository)
+RETURN
+  repository as Repository
+----
+
+[[spring-data:AnnotatedRepository]]
+[source,cypher,role="concept"]
+.Labels all types annotated with "org.springframework.stereotype.Repository" with "Spring" and "Repository".
+----
+MATCH
+  (repository:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
+WHERE
+  annotationType.fqn = "org.springframework.stereotype.Repository"
+SET
+  repository:Spring:Repository
+RETURN
+  repository as Repository
+----
+
+[[spring-data:ImplementedRepository]]
+[source,cypher,role="concept"]
+.Labels all types implementing "org.springframework.data.repository.Repository" with "Spring" and "Repository".
+----
+MATCH
+  (repository:Type)-[:EXTENDS|IMPLEMENTS*]->(superType:Type)
+WHERE
+  superType.fqn in [
+    "org.springframework.data.repository.Repository"
+  ]
+SET
+  repository:Spring:Repository
+RETURN
+  repository as Repository
+----
+
