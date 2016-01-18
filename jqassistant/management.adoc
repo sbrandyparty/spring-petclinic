@@ -1,6 +1,6 @@
 [[management:Default]]
 [role=group,includesConcepts="management:ManagedResources"]
-== JPA Model
+== Management
 
 The following repors are created:
 
@@ -9,7 +9,7 @@ The following repors are created:
 === Reports
 
 [[management:ManagedResources]]
-.Returns all managed resources including their attributes and operations.
+.All managed resources including their attributes and operations.
 [source,cypher,role=concept,requiresConcepts="spring-jmx:ManagedResource,spring-jmx:ManagedAttribute,spring-jmx:ManagedOperation"]
 ----
 MATCH
