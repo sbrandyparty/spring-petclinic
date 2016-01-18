@@ -42,9 +42,12 @@ MATCH
   (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(otherType:Spring:Type)
 WHERE
   type <> otherType
-  and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
-  and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
-  and not (otherType:Interface)
+  and any
+    (typeRole in labels(type) WHERE typeRole in selectedRoles)
+  and any
+    (otherTypeRole in labels(otherType) WHERE otherTypeRole in selectedRoles)
+  and not
+    (otherType:Interface)
 RETURN DISTINCT
   type as Dependent, otherType as InvalidDependency
 ----
@@ -113,8 +116,10 @@ MATCH
   (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Spring:Type)
 WHERE
   type <> otherType
-  and any (selectedRole in selectedRoles WHERE selectedRole in labels(type))
-  and any (selectedRole in selectedRoles WHERE selectedRole in labels(otherType))
+  and any
+    (typeRole in labels(type) WHERE typeRole in selectedRoles)
+  and any
+    (otherTypeRole in labels(otherType) WHERE otherTypeRole in selectedRoles)
 MERGE
   (type)-[:USES]->(otherType)
 RETURN
