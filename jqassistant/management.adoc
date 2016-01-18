@@ -2,7 +2,7 @@
 [role=group,includesConcepts="management:ManagedResources"]
 == Management
 
-The following repors are created:
+The following reports are created:
 
 - <<management:ManagedResources>>
 
