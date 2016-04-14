@@ -44,6 +44,8 @@
         <!-- jQAssistant and asciidoctor -->
         <jqassistant.version>1.1.2</jqassistant.version>
         <asciidoctor.version>1.5.3</asciidoctor.version>
+        <!-- Avoid problems during site build -->
+        <cobertura.skip>true</cobertura.skip>
     </properties>
 
     <dependencyManagement>

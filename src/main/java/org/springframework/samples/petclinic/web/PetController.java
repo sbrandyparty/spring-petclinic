@@ -19,7 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.samples.petclinic.repository.PetRepository;
+import org.springframework.samples.petclinic.service.ClinicServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -39,16 +40,21 @@ import java.util.Collection;
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 
-    private final ClinicService clinicService;
+    // Violation of "structure:ImplementationDependencies"
+    private final ClinicServiceImpl clinicService;
+
+    // Violation of "structure:ControllerDependencies"
+    private final PetRepository petRepository;
 
     @Autowired
-    public PetController(ClinicService clinicService) {
+    public PetController(ClinicServiceImpl clinicService, PetRepository petRepository) {
         this.clinicService = clinicService;
+        this.petRepository = petRepository;
     }
 
     @ModelAttribute("types")
     public Collection<PetType> populatePetTypes() {
-        return this.clinicService.findPetTypes();
+        return this.petRepository.findPetTypes();
     }
 
     @ModelAttribute("owner")
