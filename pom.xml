@@ -458,6 +458,7 @@
                     <attributes>
                         <toc>auto</toc>
                         <toclevels>5</toclevels>
+                        <experimental>true</experimental>
                     </attributes>
                 </configuration>
                 <dependencies>
