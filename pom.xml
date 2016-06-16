@@ -402,6 +402,11 @@
                                 <group>default</group>
                             </groups>
                             -->
+                            <scanIncludes>
+                                <scanInclude>
+                                    <path>.git</path>
+                                </scanInclude>
+                            </scanIncludes>
                             <reportProperties>
                                 <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
                             </reportProperties>
@@ -418,6 +423,11 @@
                         <groupId>com.buschmais.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.graphml</artifactId>
                         <version>${jqassistant.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>de.kontext-e.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.git</artifactId>
+                        <version>1.1.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
