@@ -3,7 +3,7 @@
 This document describes coding rules for the Spring PetClinic.
 
 NOTE: The rules defined in this and all included documents are for demonstration purposes only and work in progress. For
-rendering of embedded diagrams http://graphiz.org[Graphviz] needs to be installed and available via the system path.
+rendering of embedded diagrams http://www.graphviz.org[Graphviz] needs to be installed and available via the system path.
 
 == CI Build ==
 
