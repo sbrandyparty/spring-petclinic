@@ -260,7 +260,7 @@ RETURN
 === Reports
 
 TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
-should apply a layout, e.g. "Layout->Hierarchical".
+should apply a layout, e.g. menu:Layout[Hierarchical].
 
 
 [[structure:LayerDependencies.graphml]]
