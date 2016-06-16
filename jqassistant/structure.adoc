@@ -15,16 +15,48 @@ The following GraphML reports are created:
 - <<structure:LayerDependencies.graphml>>
 - <<structure:PackageDependencies.graphml>>
 
-=== Constraints
+=== Layers And Elements
 
 The application consists of the following layers:
 
-- UI: Controller implementations
-- Logic: Service implementations
-- Persistence: Repositories (JDBC, JPA or Spring Data)
+[plantuml,class-diagram]
+....
+package UI <<Frame>> {
+  class MyController
+}
+
+package Logic <<Frame>> {
+  interface MyService
+  MyService <|-- MyServiceImpl
+}
+
+package Persistence <<Frame>> {
+  interface FooRepository
+  interface SpringDataFooRepository
+  FooRepository <|-- SpringDataFooRepository
+  FooRepository <|-- JpaFooRepositoryImpl
+  FooRepository <|-- JdbcFooRepositoryImpl
+}
+
+MyController --> MyService : uses
+MyServiceImpl --> FooRepository : uses
+
+hide members
+....
+
+* UI
+** Controller implementations
+* Logic
+** Service interfaces and implementations
+* Persistence
+** Repository interfaces and implementations
+*** Spring Data (interface declaration only)
+*** JPA
+*** JDBC
+
+=== Constraints
 
 The following sections describe restrictions on dependencies between these layers.
-
 
 ==== General
 
@@ -32,28 +64,39 @@ The following sections describe restrictions on dependencies between these layer
 [source,cypher,role=constraint,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
 .There must be no direct dependencies between controller, service and repository implementations, i.e. only dependencies to interfaces are allowed.
 ----
-WITH
-  [
-    "Controller",
-    "Service",
-    "Repository"
-  ] as selectedRoles
 MATCH
   (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(otherType:Spring:Type)
 WHERE
   type <> otherType
-  and any
-    (typeRole in labels(type) WHERE typeRole in selectedRoles)
-  and any
-    (otherTypeRole in labels(otherType) WHERE otherTypeRole in selectedRoles)
-  and not
-    (otherType:Interface)
+  and not otherType:Interface
 RETURN DISTINCT
   type as Dependent, otherType as InvalidDependency
 ----
 
 
 ==== UI
+
+The server side UI implementaion is based on Spring MVC controllers:
+
+[source,java]
+.Example controller
+----
+@Controller
+@RequestMapping("/resource")
+public class MyController {
+
+    private final MyService service;
+
+    @Autowired
+    public MyController(MyService myService) {
+        this.myService = myService;
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String get() {
+    }
+}
+----
 
 [[structure:ControllerDependencies]]
 [source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
@@ -69,6 +112,31 @@ RETURN DISTINCT
 
 
 ==== Logic
+
+The business logic consists of services which are defined by interfaces and implemented by classes annotated with @Service:
+
+[source,java]
+.Example service interface
+----
+public interface MyService {
+    Collection<Foo> findFoos() throws DataAccessException;
+}
+----
+
+[source,java]
+.Example service implementation
+----
+@Service
+public class MyServiceImpl implements MyService {
+
+    private FooRepository fooRepository;
+
+    @Autowired
+    public ServiceImpl(FooRepository fooRepository) {
+        this.fooRepository = fooRepository;
+    }
+}
+----
 
 [[structure:ServiceDependencies]]
 [source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
@@ -86,6 +154,68 @@ RETURN DISTINCT
 
 
 ==== Persistence
+
+Repositories provide access to the database and are defined by interfaces (one per model element):
+
+[source,java]
+.Example repository interface
+----
+public interface FooRepository {
+    Collection<Foo> findFoos() throws DataAccessException;
+}
+----
+
+There are three options to provide or implement a repository:
+
+[source,java]
+.Example Spring Data repository
+----
+public interface SpringDataFooRepository extends FooRepository, Repository<Foo, Integer> {
+
+    @Override
+    @Query("SELECT foo FROM Foo ORDER BY foo.name")
+    List<Foo> findFoos() throws DataAccessException;
+}
+----
+
+[source,java]
+.Example JPA repository
+----
+@Repository
+public class JpaFooRepositoryImpl implements FooRepository {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Foo> findFoos() {
+        return this.em.createQuery("SELECT foo FROM Foo ORDER BY foo.name").getResultList();
+    }
+----
+
+[source,java]
+.Example JDBC repository
+----
+@Repository
+public class JdbcFooRepositoryImpl implements Repository {
+
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    public JdbcRepositoryImpl(DataSource dataSource) {
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Override
+    public List<Foo> findFoos() throws DataAccessException {
+        Map<String, Object> params = new HashMap<>();
+        return this.namedParameterJdbcTemplate.query(
+            "SELECT id, name FROM foo ORDER BY name",
+            params,
+            BeanPropertyRowMapper.newInstance(Foo.class));
+    }
+----
 
 [[structure:RepositoryDependencies]]
 [source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
@@ -134,7 +264,7 @@ should apply a layout, e.g. "Layout->Hierarchical".
 
 
 [[structure:LayerDependencies.graphml]]
-[source,cypher,role=concept,requiresConcepts="structure:LayerDependencies"]
+[source,cypher,role=concept,requiresConcepts="structure:LayerDependencies",reportType="graphml"]
 .Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
 ----
 MATCH
@@ -147,7 +277,7 @@ RETURN
 
 
 [[structure:PackageDependencies.graphml]]
-[source,cypher,role=concept]
+[source,cypher,role=concept,reportType="graphml"]
 .Dependencies between packages and their contained types.
 ----
 MATCH

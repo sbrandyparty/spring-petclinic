@@ -10,7 +10,7 @@ The following test rules apply:
 === Constraints
 
 [[assertj:TestMethodWithoutAssertion]]
-[source,cypher,role=constraint,requiresConcepts="junit4:TestMethod,assertj:AssertMethod,spring.test.web:Assert"]
+[source,cypher,role=constraint,requiresConcepts="junit4:TestMethod,assertj:AssertMethod,spring-test-web:Assert"]
 .All test methods must perform at least one assertion (within a call hierarchy of max. 3 steps).
 ----
 MATCH
@@ -44,7 +44,7 @@ RETURN
   assertMethod
 ----
 
-[[spring.test.web:Assert]]
+[[spring-test-web:Assert]]
 [source,cypher,role=concept]
 .Mark method "org.springframework.test.web.servlet.ResultActions#andExpect" as "Spring" and "Assert".
 ----
