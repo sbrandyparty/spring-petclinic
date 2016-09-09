@@ -62,7 +62,7 @@ public abstract class AbstractClinicServiceTests {
         assertThat(owners.size()).isEqualTo(2);
 
         owners = this.clinicService.findOwnerByLastName("Daviss");
-        assertThat(owners.isEmpty());
+        assertThat(owners.isEmpty()).isTrue();
     }
 
     @Test
@@ -188,6 +188,16 @@ public abstract class AbstractClinicServiceTests {
         pet7 = this.clinicService.findPetById(7);
         assertThat(pet7.getVisits().size()).isEqualTo(found + 1);
         assertThat(visit.getId()).isNotNull();
+    }
+
+    @Test
+       public void shouldFindVisitsByPetId() throws Exception {
+        Collection<Visit> visits = this.clinicService.findVisitsByPetId(7);
+        assertThat(visits.size()).isEqualTo(2);
+        Visit[] visitArr = visits.toArray(new Visit[visits.size()]);
+        assertThat(visitArr[0].getPet()).isNotNull();
+        assertThat(visitArr[0].getDate()).isNotNull();
+        assertThat(visitArr[0].getPet().getId()).isEqualTo(7);
     }
 
 

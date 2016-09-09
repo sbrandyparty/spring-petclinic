@@ -6,7 +6,8 @@
 ## Running petclinic locally
 ```
 	git clone https://github.com/spring-projects/spring-petclinic.git
-	mvnw tomcat7:run
+	cd spring-petclinic
+	./mvnw tomcat7:run
 ```
 
 You can then access petclinic here: http://localhost:9966/petclinic/
@@ -95,7 +96,7 @@ File -> Import -> Maven -> Existing Maven project
     <td>
       <a href="/src/main/webapp/WEB-INF/jsp/owners/ownersList.jsp">ownersList.jsp</a> 
       <a href="/src/main/webapp/WEB-INF/jsp/vets/vetList.jsp">vetList.jsp</a> 
-      <a href="/src/main/webapp/WEB-INF/web.xml">web.xml</a> 
+      <a href="/src/main/java/org/springframework/samples/petclinic/PetclinicInitializer.java">PetclinicInitializer.java</a>
       <a href="/src/main/resources/dandelion/datatables/datatables.properties">datatables.properties</a> 
    </td>
   </tr>
@@ -134,7 +135,7 @@ File -> Import -> Maven -> Existing Maven project
       <td>
       <a href="/src/main/resources/spring/business-config.xml">business-config.xml</a>
        <a href="/src/test/java/org/springframework/samples/petclinic/service/ClinicServiceJdbcTests.java">ClinicServiceJdbcTests.java</a>
-       <a href="/src/main/webapp/WEB-INF/web.xml">web.xml</a>
+       <a href="/src/main/java/org/springframework/samples/petclinic/PetclinicInitializer.java">PetclinicInitializer.java</a>
     </td>
   </tr>
   <tr>
@@ -161,6 +162,11 @@ File -> Import -> Maven -> Existing Maven project
   <tr>
     <th width="300px">Others</th><th width="300px">Files</th>
   </tr>
+    <tr>
+      <td>Spring Boot branch</td>
+      <td>
+        <a href="https://github.com/spring-projects/spring-petclinic/tree/springboot">See here</a></td>
+    </tr>
   <tr>
     <td>Gradle branch</td>
     <td>
