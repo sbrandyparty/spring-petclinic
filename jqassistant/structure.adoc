@@ -62,10 +62,10 @@ The following sections describe restrictions on dependencies between these layer
 
 [[structure:ImplementationDependencies]]
 [source,cypher,role=constraint,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
-.There must be no direct dependencies between controller, service and repository implementations, i.e. only dependencies to interfaces are allowed.
+.There must be no direct dependencies between Spring component implementations, i.e. only dependencies to interfaces are allowed.
 ----
 MATCH
-  (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(otherType:Spring:Type)
+  (type:Spring:Component)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(otherType:Spring:Component)
 WHERE
   type <> otherType
   and not otherType:Interface
@@ -103,7 +103,7 @@ public class MyController {
 .A controller can only have dependencies to services (e.g. direct usage of repositories is not allowed).
 ----
 MATCH
-  (type:Type:Spring:Controller)-[:USES]->(otherType:Type:Spring)
+  (type:Spring:Controller)-[:USES]->(otherType:Spring:Component)
 WHERE NOT
   otherType:Service
 RETURN DISTINCT
@@ -143,7 +143,7 @@ public class MyServiceImpl implements MyService {
 .A service can only have dependencies to repositories or other services (e.g. usage of controllers is not allowed).
 ----
 MATCH
-  (type:Type:Spring:Service)-[:USES]->(otherType:Type:Spring)
+  (type:Spring:Service)-[:USES]->(otherType:Spring:Component)
 WHERE NOT (
   otherType:Service
   or otherType:Repository
@@ -222,7 +222,7 @@ public class JdbcFooRepositoryImpl implements Repository {
 .A repository can only have dependencies to other repositories.
 ----
 MATCH
-  (type:Type:Spring:Repository)-[:USES]->(otherType:Type:Spring)
+  (type:Spring:Repository)-[:USES]->(otherType:Spring:Component)
 WHERE NOT
   otherType:Repository
 RETURN DISTINCT
@@ -234,22 +234,12 @@ RETURN DISTINCT
 
 [[structure:LayerDependencies]]
 [source,cypher,role=concept,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
-.Creates a USES relation between application layer items, i.e. controller, service and repository implementations.
+.Creates a USES relation between application layer items, i.e. spring components.
 ----
-WITH
-  [
-    "Controller",
-    "Service",
-    "Repository"
-  ] as selectedRoles
 MATCH
-  (type:Spring:Type)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Spring:Type)
+  (type:Spring:Component)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Spring:Component)
 WHERE
   type <> otherType
-  and any
-    (typeRole in labels(type) WHERE typeRole in selectedRoles)
-  and any
-    (otherTypeRole in labels(otherType) WHERE otherTypeRole in selectedRoles)
 MERGE
   (type)-[:USES]->(otherType)
 RETURN
@@ -268,7 +258,7 @@ should apply a layout, e.g. menu:Layout[Hierarchical].
 .Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
 ----
 MATCH
-  (type:Spring:Type)-[uses:USES]->(otherType:Spring:Type)
+  (type:Spring:Component)-[uses:USES]->(otherType:Spring:Component)
 RETURN
   type as Dependent,
   uses as Uses,
