@@ -29,6 +29,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
 import java.util.Collection;
 
 /**
@@ -40,6 +41,7 @@ import java.util.Collection;
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 
+    private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
     // Violation of "structure:ImplementationDependencies"
     private final ClinicServiceImpl clinicService;
 
@@ -59,8 +61,7 @@ public class PetController {
 
     @ModelAttribute("owner")
     public Owner findOwner(@PathVariable("ownerId") int ownerId) {
-        Owner owner = this.clinicService.findOwnerById(ownerId);
-        return owner;
+        return this.clinicService.findOwnerById(ownerId);
     }
 
     @InitBinder("owner")
@@ -78,7 +79,7 @@ public class PetController {
         Pet pet = new Pet();
         owner.addPet(pet);
         model.put("pet", pet);
-        return "pets/createOrUpdatePetForm";
+        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
     }
 
     @RequestMapping(value = "/pets/new", method = RequestMethod.POST)
@@ -88,7 +89,7 @@ public class PetController {
         }
         if (result.hasErrors()) {
             model.put("pet", pet);
-            return "pets/createOrUpdatePetForm";
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             owner.addPet(pet);
             this.clinicService.savePet(pet);
@@ -100,14 +101,14 @@ public class PetController {
     public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) {
         Pet pet = this.clinicService.findPetById(petId);
         model.put("pet", pet);
-        return "pets/createOrUpdatePetForm";
+        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
     }
 
     @RequestMapping(value = "/pets/{petId}/edit", method = RequestMethod.POST)
     public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) {
         if (result.hasErrors()) {
             model.put("pet", pet);
-            return "pets/createOrUpdatePetForm";
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             owner.addPet(pet);
             this.clinicService.savePet(pet);

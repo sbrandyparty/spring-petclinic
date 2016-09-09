@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-petclinic</artifactId>
-    <version>4.2.5-SNAPSHOT</version>
+    <version>4.2.6-SNAPSHOT</version>
 
     <name>petclinic</name>
     <packaging>war</packaging>
@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Spring -->
-        <spring-io-platform.version>2.0.3.RELEASE</spring-io-platform.version>
+        <spring-io-platform.version>2.0.7.RELEASE</spring-io-platform.version>
         <spring-data-jdbc.version>1.1.0.RELEASE</spring-data-jdbc.version>
 
 
@@ -101,12 +101,8 @@
         </dependency>
         <!-- SPRING, SPRING, SPRINGITY SPRING -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
         </dependency>
 
         <dependency>
@@ -281,6 +277,7 @@
     <!-- Maven plugin versions are mentioned in order to guarantee the build reproducibility in the long term -->
     <build>
         <defaultGoal>install</defaultGoal>
+        <finalName>petclinic</finalName>
         <testResources>
             <testResource>
                 <!-- declared explicitly so Spring config files can be placed next to their corresponding JUnit test class  -->
@@ -320,7 +317,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warName>petclinic</warName>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <plugin>
@@ -404,6 +401,11 @@
                                 <group>default</group>
                             </groups>
                             -->
+                            <scanIncludes>
+                                <scanInclude>
+                                    <path>.git</path>
+                                </scanInclude>
+                            </scanIncludes>
                             <reportProperties>
                                 <graphml.report.directory>${project.build.directory}/graphml</graphml.report.directory>
                             </reportProperties>
@@ -420,6 +422,11 @@
                         <groupId>com.buschmais.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.graphml</artifactId>
                         <version>${jqassistant.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>de.kontext-e.jqassistant.plugin</groupId>
+                        <artifactId>jqassistant.plugin.git</artifactId>
+                        <version>1.1.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -444,28 +451,39 @@
                     <sourceDocumentName>index.adoc</sourceDocumentName>
                     <backend>xhtml5</backend>
                     <sourceHighlighter>coderay</sourceHighlighter>
+                    <requires>
+                        <require>asciidoctor-diagram</require>
+                    </requires>
                     <attributes>
                         <toc>auto</toc>
                         <toclevels>5</toclevels>
+                        <experimental>true</experimental>
                     </attributes>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-diagram</artifactId>
+                        <version>1.3.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
     <reporting>
         <plugins>
-
-            <!--  integrate maven-cobertura-plugin to project site  -->
+            <!-- integrate maven-cobertura-plugin to project site -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>${cobertura.version}</version>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                    </formats>
-                    <check/>
-                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>cobertura</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>com.buschmais.jqassistant.scm</groupId>
@@ -484,11 +502,12 @@
     <profiles>
 		<profile>
 			<id>bower-install</id>
-			<build>
+  			<build>
 			<plugins>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
+                    <version>1.4.0</version>
 					<executions>
 						<execution>
 							<phase>generate-sources</phase>
@@ -508,6 +527,33 @@
 			</plugins>
 		  </build>
 		</profile>
+        <profile>
+            <id>less-install</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.lesscss</groupId>
+                        <artifactId>lesscss-maven-plugin</artifactId>
+                        <version>1.7.0.1.1</version>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/webapp/resources/less</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/webapp/resources/css</outputDirectory>
+                            <compress>true</compress>
+                            <includes>
+                                <include>petclinic.less</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
    </profiles>
 
     <url>demopetclinic</url>
