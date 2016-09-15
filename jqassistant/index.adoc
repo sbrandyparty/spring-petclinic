@@ -1,3 +1,7 @@
+:numbered:              // Number all section headers
+:sectnumlevels: 5       // Number up to section level 5
+:toclevels: 2           // Table of content should have only two levels
+
 = Spring PetClinic Coding Rules
 
 This document describes coding rules for the Spring PetClinic.
