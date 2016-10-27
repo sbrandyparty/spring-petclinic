@@ -76,7 +76,7 @@ RETURN DISTINCT
 
 ==== UI
 
-The server side UI implementaion is based on Spring MVC controllers:
+The server side UI implementation is based on Spring MVC controllers:
 
 [source,java]
 .Example controller
