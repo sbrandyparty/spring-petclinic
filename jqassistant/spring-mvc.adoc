@@ -6,14 +6,14 @@ This document defines concepts related to the Spring MVC Framework.
 
 [[spring-mvc:Service]]
 [source,cypher,role="concept"]
-.Labels all types annotated with "org.springframework.stereotype.Service" with "Spring" and "Service".
+.Labels all types annotated with "org.springframework.stereotype.Service" with "Spring", "Component" and "Service".
 ----
 MATCH
   (service:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
 WHERE
   annotationType.fqn = "org.springframework.stereotype.Service"
 SET
-  service:Spring:Service
+  service:Spring:Component:Service
 RETURN
   service as Service
 ----
@@ -21,14 +21,14 @@ RETURN
 
 [[spring-mvc:Controller]]
 [source,cypher,role="concept"]
-.Labels all types annotated with "org.springframework.stereotype.Controller" with "Spring" and "Controller".
+.Labels all types annotated with "org.springframework.stereotype.Controller" with "Spring", "Component" and "Controller".
 ----
 MATCH
   (controller:Type)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(annotationType:Type)
 WHERE
   annotationType.fqn = "org.springframework.stereotype.Controller"
 SET
-  controller:Spring:Controller
+  controller:Spring:Component:Controller
 RETURN
   controller as Controller
 ----

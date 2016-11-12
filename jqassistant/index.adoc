@@ -1,3 +1,7 @@
+:numbered:              // Number all section headers
+:sectnumlevels: 5       // Number up to section level 5
+:toclevels: 2           // Table of content should have only two levels
+
 = Spring PetClinic Coding Rules
 
 This document describes coding rules for the Spring PetClinic.
@@ -5,7 +9,7 @@ This document describes coding rules for the Spring PetClinic.
 NOTE: The rules defined in this and all included documents are for demonstration purposes only and work in progress. For
 rendering of embedded diagrams http://www.graphviz.org[Graphviz] needs to be installed and available via the system path.
 
-== CI Build ==
+== CI Build
 
 The following rule groups are executed during a build:
 
