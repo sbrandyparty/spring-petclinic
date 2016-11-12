@@ -408,11 +408,6 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.jpa2</artifactId>
-                        <version>${jqassistant.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.graphml</artifactId>
                         <version>${jqassistant.version}</version>
                     </dependency>
