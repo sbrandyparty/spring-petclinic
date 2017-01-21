@@ -42,7 +42,7 @@
         <cobertura.version>2.7</cobertura.version>
 
         <!-- jQAssistant and asciidoctor -->
-        <jqassistant.version>1.1.4</jqassistant.version>
+        <jqassistant.version>1.2.0</jqassistant.version>
         <asciidoctor.version>1.5.3</asciidoctor.version>
     </properties>
 
@@ -383,7 +383,7 @@
 
             <!-- jQAssistant -->
             <plugin>
-                <groupId>com.buschmais.jqassistant.scm</groupId>
+                <groupId>com.buschmais.jqassistant</groupId>
                 <artifactId>jqassistant-maven-plugin</artifactId>
                 <version>${jqassistant.version}</version>
                 <executions>
@@ -413,13 +413,13 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.jpa2</artifactId>
-                        <version>${jqassistant.version}</version>
+                        <artifactId>jpa2</artifactId>
+                        <version>1.2</version>
                     </dependency>
                     <dependency>
                         <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jqassistant.plugin.graphml</artifactId>
-                        <version>${jqassistant.version}</version>
+                        <artifactId>graphml</artifactId>
+                        <version>1.2</version>
                     </dependency>
                     <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
@@ -484,7 +484,7 @@
                 </reportSets>
             </plugin>
             <plugin>
-                <groupId>com.buschmais.jqassistant.scm</groupId>
+                <groupId>com.buschmais.jqassistant</groupId>
                 <artifactId>jqassistant-maven-plugin</artifactId>
                 <version>${jqassistant.version}</version>
                 <reportSets>
