@@ -394,7 +394,7 @@
                         </goals>
                         <configuration>
                             <store>
-                                <uri>bolt://f1ws30:17687</uri>
+                                <uri>bolt://localhost:7687</uri>
                                 <username>neo4j</username>
                                 <password>admin</password>
                             </store>
