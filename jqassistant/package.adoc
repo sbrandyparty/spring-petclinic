@@ -22,8 +22,12 @@ RETURN
   rootPackage as RootPackage
 ----
 
-The application is layered in "web", "service", "repository" and "model".
-These package are located directly within the root package.
+The application has a layered structure. Each layer is represented by a package located directly in the root package:
+
+- web
+- service
+- repository
+- model
 
 [[package:Layer]]
 .Labels all direct sub-packages of the root package as `Layer`.
@@ -44,7 +48,7 @@ RETURN
   layer as Layer
 ----
 
-There exists a dependency between two layers if they contain dependent type in any of their sub-packages.
+Dependencies between two layers exists if there are dependencies between Java type in any of the sub-packages.
 
 [[package:LayerDependency]]
 [source,cypher,role=concept,requiresConcepts="package:Layer"]
@@ -66,9 +70,11 @@ RETURN
   layer1 as Dependent, layer2 as Dependency, weight as Weight
 ----
 
+There are definitions of allowed dependencies between layers.
+
 [[package:LayerDependencyDefinition]]
 [source,cypher,role=concept,requiresConcepts="package:Layer",reportType="graphml"]
-.Adds a relation `DEFINES_DEPENDENCY` between layers for allowed dependencies.
+.Adds `DEFINES_DEPENDENCY` relations between layers for allowed dependencies.
 ----
 MATCH
   (web:Layer {name:"web"}),
@@ -109,7 +115,7 @@ RETURN
 
 [[package:LayerDependency.graphml]]
 [source,cypher,role=concept,requiresConcepts="package:LayerDependency",reportType="graphml"]
-.Dependencies between layers and their contained types.
+.Creates a GraphML report about dependencies between layers and their contained types.
 ----
 MATCH
   (layer:Layer:Package)-[:CONTAINS*]->(type:Type)
@@ -122,3 +128,4 @@ RETURN {
   relationships : collect(dependsOn)
 } as TypesPerLayer
 ----
+
