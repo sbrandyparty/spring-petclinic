@@ -1,6 +1,6 @@
 [[spring-component:Default]]
 [role=group,includesConstraints="spring-component:ControllerDependencies,spring-component:ControllerMustBeLocatedInWebLayer,spring-component:ServiceDependencies,spring-component:ServiceMustBeLocatedInServiceLayer,spring-component:RepositoryDependencies,spring-component:RepositoryMustBeLocatedInRepositoryLayer,spring-component:ImplementationDependencies,dependency:PackageCycles",includesConcepts="spring-component:ComponentDependencies.graphml"]
-== Spring Component Rules And Reports
+== Spring Components
 
 The following constraints are verified:
 
@@ -17,7 +17,7 @@ The following GraphML reports are created:
 
 - <<spring-component:ComponentDependencies.graphml>>
 
-=== Components
+=== Overview
 
 The application consists of the following components:
 

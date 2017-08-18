@@ -1,6 +1,6 @@
 [[package:Default]]
 [role=group,includesConstraints="package:LayerDependencyViolation",includesConcepts="package:LayerDependency.graphml"]
-== Package Structure
+== Packages
 
 This chapter describes the concepts and constraints related to the package structure.
 

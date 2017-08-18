@@ -1,6 +1,6 @@
 [[test:Default]]
 [role=group,includesConstraints="junit4:IgnoreWithoutMessage,assertj:TestMethodWithoutAssertion"]
-== Test Rules
+== Tests
 
 The following test rules apply:
 

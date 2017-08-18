@@ -17,12 +17,13 @@ should apply a layout, e.g. menu:Layout[Hierarchical].
 The following rule groups are executed during a build:
 
 [[default]]
-[role=group,includesGroups="package:Default,spring-component:Default,model:Default,management:Default,test:Default"]
+[role=group,includesGroups="package:Default,spring-component:Default,model:Default,management:Default,test:Default,git:Default"]
 - <<spring-component:Default>>
 - <<package:Default>>
 - <<model:Default>>
 - <<management:Default>>
 - <<test:Default>>
+- <<git:Default>>
 
 include::maven.adoc[]
 include::package.adoc[]
@@ -30,6 +31,7 @@ include::spring-component.adoc[]
 include::model.adoc[]
 include::management.adoc[]
 include::test.adoc[]
+include::git.adoc[]
 include::spring-mvc.adoc[]
 include::spring-data.adoc[]
 include::spring-jmx.adoc[]

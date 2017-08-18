@@ -1,0 +1,36 @@
+[[git:Default]]
+[role=group,includesConstraints="git:BranchesMustBeSynchronized"]
+== Git
+
+NOTE: The rules defined in this documents are used to keep the different branches in sync.
+
+=== Constraints
+
+[[git:BranchesMustBeSynchronized]]
+[source,cypher,role=constraint]
+.The branches "violations" and "jqa-remote" must include the latest commit (HEAD) of "master" (i.e. merge is missing).
+----
+MATCH
+  (master:Branch),
+  (branch:Branch)
+WHERE
+  master.name = "heads/master"
+  and branch.name in [
+    "heads/violations",
+    "heads/jqa-remote"
+  ]
+WITH
+  master, branch
+MATCH
+  (master)-[:HAS_HEAD]->(masterHead:Commit),
+  (branch)-[:HAS_HEAD]->(branchHead:Commit)
+OPTIONAL MATCH
+  p=shortestPath((branchHead)-[:HAS_PARENT*]->(masterHead))
+WITH
+  master, branch, p
+WHERE
+  p is null
+RETURN
+  branch.name as OutdatedBranch
+----
+
