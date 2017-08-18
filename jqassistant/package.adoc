@@ -94,7 +94,7 @@ RETURN
 === Constraints
 
 [[package:LayerDependencyViolation]]
-[source,cypher,role=constraint,requiresConcepts="package:LayerDependency,package:LayerDependencyDefinition"]
+[source,cypher,role=constraint,requiresConcepts="package:LayerDependency,package:LayerDependencyDefinition",primaryReportColumn="Type"]
 .There must be no dependencies between layers that are not explicitly defined.
 ----
 MATCH
@@ -108,7 +108,7 @@ MATCH
   (layer2)-[:CONTAINS*]->(type2:Type),
   (type1)-[:DEPENDS_ON]->(type2)
 RETURN
-  layer1 as Layer, type1 as Type, layer2 as LayerDependency, type2 as TypeDependency
+  layer1.name as Layer, type1 as Type, layer2.name as LayerDependency, type2 as TypeDependency
 ----
 
 === Reports
