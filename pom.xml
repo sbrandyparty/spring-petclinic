@@ -411,6 +411,15 @@
                         </configuration>
                     </execution>
                 </executions>
+                <!--
+                <configuration>
+                    <store>
+                        <uri>bolt://localhost:7687</uri>
+                        <username>neo4j</username>
+                        <password>admin</password>
+                    </store>
+                </configuration>
+                -->
                 <dependencies>
                     <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
