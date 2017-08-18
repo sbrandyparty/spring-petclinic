@@ -411,7 +411,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <!--
                 <configuration>
                     <store>
                         <uri>bolt://localhost:7687</uri>
@@ -419,7 +418,6 @@
                         <password>admin</password>
                     </store>
                 </configuration>
-                -->
                 <dependencies>
                     <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
