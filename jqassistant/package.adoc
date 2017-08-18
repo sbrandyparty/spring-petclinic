@@ -48,7 +48,7 @@ RETURN
   layer as Layer
 ----
 
-Dependencies between two layers exists if there are dependencies between Java type in any of the sub-packages.
+A dependency between two layers exists if there are dependencies between Java types in any of the sub-packages.
 
 [[package:LayerDependency]]
 [source,cypher,role=concept,requiresConcepts="package:Layer"]
