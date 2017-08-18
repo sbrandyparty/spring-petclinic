@@ -42,7 +42,7 @@
         <cobertura.version>2.7</cobertura.version>
 
         <!-- jQAssistant and asciidoctor -->
-        <jqassistant.version>1.2.0</jqassistant.version>
+        <jqassistant.version>1.3.0</jqassistant.version>
         <asciidoctor.version>1.5.3</asciidoctor.version>
         <!-- Avoid problems during site build -->
         <cobertura.skip>true</cobertura.skip>
@@ -395,7 +395,8 @@
                             <goal>analyze</goal>
                         </goals>
                         <configuration>
-                            <failOnViolations>false</failOnViolations>
+                            <failOnSeverity>CRITICAL</failOnSeverity>
+                            <warnOnSeverity>INFO</warnOnSeverity>
                             <!--
                             <groups>
                                 <group>default</group>
@@ -414,19 +415,9 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>jpa2</artifactId>
-                        <version>1.2</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.buschmais.jqassistant.plugin</groupId>
-                        <artifactId>graphml</artifactId>
-                        <version>1.2</version>
-                    </dependency>
-                    <dependency>
                         <groupId>de.kontext-e.jqassistant.plugin</groupId>
                         <artifactId>jqassistant.plugin.git</artifactId>
-                        <version>1.1.3</version>
+                        <version>1.2.0</version>
                     </dependency>
                 </dependencies>
             </plugin>

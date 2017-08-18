@@ -1,0 +1,21 @@
+[[maven:Default]]
+== Maven
+
+This chapter describes the concepts related to Maven.
+
+=== Concepts
+
+[[maven:MainArtifact]]
+.Labels all main artifacts created by Maven modules with `Main`
+[source,cypher,role=concept]
+----
+MATCH
+  (:Maven:Project)-[:CREATES]->(mainArtifact:Artifact)
+WHERE
+  mainArtifact.type <> "test-jar"
+SET
+  mainArtifact:Main
+RETURN
+  mainArtifact as MainArtifact
+----
+

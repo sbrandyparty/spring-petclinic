@@ -1,23 +1,25 @@
-[[structure:Default]]
-[role=group,includesConstraints="structure:ControllerDependencies,structure:ServiceDependencies,structure:RepositoryDependencies,structure:ImplementationDependencies,dependency:PackageCycles",includesConcepts="structure:PackageDependencies.graphml,structure:LayerDependencies.graphml"]
-== Structural Rules And Reports
+[[spring-component:Default]]
+[role=group,includesConstraints="spring-component:ControllerDependencies,spring-component:ControllerMustBeLocatedInWebLayer,spring-component:ServiceDependencies,spring-component:ServiceMustBeLocatedInServiceLayer,spring-component:RepositoryDependencies,spring-component:RepositoryMustBeLocatedInRepositoryLayer,spring-component:ImplementationDependencies,dependency:PackageCycles",includesConcepts="spring-component:ComponentDependencies.graphml"]
+== Spring Component Rules And Reports
 
 The following constraints are verified:
 
-- <<structure:ControllerDependencies>>
-- <<structure:ServiceDependencies>>
-- <<structure:RepositoryDependencies>>
-- <<structure:ImplementationDependencies>>
+- <<spring-component:ControllerDependencies>>
+- <<spring-component:ControllerMustBeLocatedInWebLayer>>
+- <<spring-component:ServiceDependencies>>
+- <<spring-component:ServiceMustBeLocatedInServiceLayer>>
+- <<spring-component:RepositoryDependencies>>
+- <<spring-component:RepositoryMustBeLocatedInRepositoryLayer>>
+- <<spring-component:ImplementationDependencies>>
 - Package cycles
 
 The following GraphML reports are created:
 
-- <<structure:LayerDependencies.graphml>>
-- <<structure:PackageDependencies.graphml>>
+- <<spring-component:ComponentDependencies.graphml>>
 
-=== Layers And Elements
+=== Components
 
-The application consists of the following layers:
+The application consists of the following components:
 
 [plantuml,class-diagram]
 ....
@@ -56,11 +58,11 @@ hide members
 
 === Constraints
 
-The following sections describe restrictions on dependencies between these layers.
+The following sections describe restrictions on dependencies between these components.
 
 ==== General
 
-[[structure:ImplementationDependencies]]
+[[spring-component:ImplementationDependencies]]
 [source,cypher,role=constraint,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
 .There must be no direct dependencies between Spring component implementations, i.e. only dependencies to interfaces are allowed.
 ----
@@ -72,7 +74,6 @@ WHERE
 RETURN DISTINCT
   type as Dependent, otherType as InvalidDependency
 ----
-
 
 ==== UI
 
@@ -98,8 +99,8 @@ public class MyController {
 }
 ----
 
-[[structure:ControllerDependencies]]
-[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+[[spring-component:ControllerDependencies]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:ComponentDependencies"]
 .A controller can only have dependencies to services (e.g. direct usage of repositories is not allowed).
 ----
 MATCH
@@ -110,6 +111,17 @@ RETURN DISTINCT
   type as InvalidController, otherType as Dependency
 ----
 
+[[spring-component:ControllerMustBeLocatedInWebLayer]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:Component,package:Layer"]
+.A controller must be located in the layer named 'web'.
+----
+MATCH
+  (controller:Spring:Controller)
+WHERE NOT
+  (:Layer{name:"web"})-[:CONTAINS*]->(controller)
+RETURN
+  controller as Controller
+----
 
 ==== Logic
 
@@ -138,8 +150,8 @@ public class MyServiceImpl implements MyService {
 }
 ----
 
-[[structure:ServiceDependencies]]
-[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+[[spring-component:ServiceDependencies]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:ComponentDependencies"]
 .A service can only have dependencies to repositories or other services (e.g. usage of controllers is not allowed).
 ----
 MATCH
@@ -152,6 +164,17 @@ RETURN DISTINCT
   type as InvalidService, otherType as Dependency
 ----
 
+[[spring-component:ServiceMustBeLocatedInServiceLayer]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:Component,package:Layer"]
+.A service must be located in the layer named 'service'.
+----
+MATCH
+  (service:Spring:Service)
+WHERE NOT
+  (:Layer{name:"service"})-[:CONTAINS*]->(service)
+RETURN
+  service as Service
+----
 
 ==== Persistence
 
@@ -217,8 +240,8 @@ public class JdbcFooRepositoryImpl implements Repository {
     }
 ----
 
-[[structure:RepositoryDependencies]]
-[source,cypher,role=constraint,requiresConcepts="structure:LayerDependencies"]
+[[spring-component:RepositoryDependencies]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:ComponentDependencies"]
 .A repository can only have dependencies to other repositories.
 ----
 MATCH
@@ -229,12 +252,34 @@ RETURN DISTINCT
   type as InvalidRepository, otherType as Dependency
 ----
 
+[[spring-component:RepositoryMustBeLocatedInRepositoryLayer]]
+[source,cypher,role=constraint,requiresConcepts="spring-component:Component,package:Layer"]
+.A repository must be located in the layer named 'repository'.
+----
+MATCH
+  (repository:Spring:Repository)
+WHERE NOT
+  (:Layer{name:"repository"})-[:CONTAINS*]->(repository)
+RETURN
+  repository as Repository
+----
+
 
 === Concepts
 
-[[structure:LayerDependencies]]
+[[spring-component:Component]]
 [source,cypher,role=concept,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
-.Creates a USES relation between application layer items, i.e. spring components.
+.Creates a USES relation between Spring components.
+----
+MATCH
+  (component:Spring:Component)
+RETURN
+  component as Component
+----
+
+[[spring-component:ComponentDependencies]]
+[source,cypher,role=concept,requiresConcepts="spring-component:Component"]
+.Creates a USES relation between Spring components.
 ----
 MATCH
   (type:Spring:Component)-[:DECLARES]->(:Method)-[:INVOKES]->(:Method)<-[:DECLARES]-(:Type:Interface)<-[:IMPLEMENTS|EXTENDS*]-(otherType:Spring:Component)
@@ -246,16 +291,11 @@ RETURN
   type as Dependent, collect(distinct otherType.fqn) as Dependencies
 ----
 
-
 === Reports
 
-TIP: GraphML reports may be viewed using http://www.yworks.com/en/products/yfiles/yed/[yEd]. After opening a file you
-should apply a layout, e.g. menu:Layout[Hierarchical].
-
-
-[[structure:LayerDependencies.graphml]]
-[source,cypher,role=concept,requiresConcepts="structure:LayerDependencies",reportType="graphml"]
-.Actual usage dependencies between the application layers, i.e. controller, service and repository implementations.
+[[spring-component:ComponentDependencies.graphml]]
+[source,cypher,role=concept,requiresConcepts="spring-component:ComponentDependencies",reportType="graphml"]
+.Actual usage dependencies between Spring components, i.e. controller, service and repository implementations.
 ----
 MATCH
   (type:Spring:Component)-[uses:USES]->(otherType:Spring:Component)
@@ -265,19 +305,3 @@ RETURN
   otherType as Dependency
 ----
 
-
-[[structure:PackageDependencies.graphml]]
-[source,cypher,role=concept,reportType="graphml"]
-.Dependencies between packages and their contained types.
-----
-MATCH
-  (package:Package)-[:CONTAINS]->(type:Type)
-OPTIONAL MATCH
-  (type)-[dependsOn:DEPENDS_ON]->(:Type)
-RETURN {
-  role : "graph",
-  parent : package,
-  nodes : collect(type),
-  relationships : collect(dependsOn)
-} as TypesPerPackage
-----

@@ -1,0 +1,124 @@
+[[package:Default]]
+[role=group,includesConstraints="package:LayerDependencyViolation",includesConcepts="package:LayerDependency.graphml"]
+== Package Structure
+
+This chapter describes the concepts and constraints related to the package structure.
+
+=== Concepts
+
+The root package of the application is "org.springframework.samples.petclinic".
+
+[[package:Root]]
+.Labels the root package of the main artifact as `Root`
+[source,cypher,role=concept,requiresConcepts="maven:MainArtifact"]
+----
+MATCH
+  (:Main:Artifact)-[:CONTAINS]->(rootPackage:Package)
+WHERE
+  rootPackage.fqn = "org.springframework.samples.petclinic"
+SET
+  rootPackage:Root
+RETURN
+  rootPackage as RootPackage
+----
+
+The application is layered in "web", "service", "repository" and "model".
+These package are located directly within the root package.
+
+[[package:Layer]]
+.Labels all direct sub-packages of the root package as `Layer`.
+[source,cypher,role=concept,requiresConcepts="package:Root"]
+----
+MATCH
+  (:Root:Package)-[:CONTAINS]->(layer:Package)
+WHERE
+  layer.name in [
+    "web",
+    "service",
+    "repository",
+    "model"
+  ]
+SET
+  layer:Layer
+RETURN
+  layer as Layer
+----
+
+There exists a dependency between two layers if they contain dependent type in any of their sub-packages.
+
+[[package:LayerDependency]]
+[source,cypher,role=concept,requiresConcepts="package:Layer"]
+.Adds a relation `DEPENDS_ON` between two layers if there are type dependencies between them.
+----
+MATCH
+  (layer1:Layer:Package)-[:CONTAINS*]->(type1:Type),
+  (layer2:Layer:Package)-[:CONTAINS*]->(type2:Type),
+  (type1)-[d:DEPENDS_ON]->(type2)
+WHERE
+  layer1 <> layer2
+WITH
+  layer1, layer2, count(d) as weight
+MERGE
+  (layer1)-[d:DEPENDS_ON]->(layer2)
+SET
+  d.weight = weight
+RETURN
+  layer1 as Dependent, layer2 as Dependency, weight as Weight
+----
+
+[[package:LayerDependencyDefinition]]
+[source,cypher,role=concept,requiresConcepts="package:Layer",reportType="graphml"]
+.Adds a relation `DEFINES_DEPENDENCY` between layers for allowed dependencies.
+----
+MATCH
+  (web:Layer {name:"web"}),
+  (service:Layer {name:"service"}),
+  (repository:Layer {name:"repository"}),
+  (model:Layer {name:"model"})
+CREATE UNIQUE
+ (web)-[w1:DEFINES_DEPENDENCY]->(service),
+ (web)-[w2:DEFINES_DEPENDENCY]->(model),
+ (service)-[s1:DEFINES_DEPENDENCY]->(repository),
+ (service)-[s2:DEFINES_DEPENDENCY]->(model),
+ (repository)-[r1:DEFINES_DEPENDENCY]->(model)
+RETURN
+  *
+----
+
+=== Constraints
+
+[[package:LayerDependencyViolation]]
+[source,cypher,role=constraint,requiresConcepts="package:LayerDependency,package:LayerDependencyDefinition"]
+.There must be no dependencies between layers that are not explicitly defined.
+----
+MATCH
+  (layer1:Layer)-[:DEPENDS_ON]->(layer2:Layer)
+WHERE NOT
+  (layer1)-[:DEFINES_DEPENDENCY]->(layer2)
+WITH
+  layer1, layer2
+MATCH
+  (layer1)-[:CONTAINS*]->(type1:Type),
+  (layer2)-[:CONTAINS*]->(type2:Type),
+  (type1)-[:DEPENDS_ON]->(type2)
+RETURN
+  layer1 as Layer, type1 as Type, layer2 as LayerDependency, type2 as TypeDependency
+----
+
+=== Reports
+
+[[package:LayerDependency.graphml]]
+[source,cypher,role=concept,requiresConcepts="package:LayerDependency",reportType="graphml"]
+.Dependencies between layers and their contained types.
+----
+MATCH
+  (layer:Layer:Package)-[:CONTAINS*]->(type:Type)
+OPTIONAL MATCH
+  (type)-[dependsOn:DEPENDS_ON]->(:Type)
+RETURN {
+  role : "graph",
+  parent : layer,
+  nodes : collect(type),
+  relationships : collect(dependsOn)
+} as TypesPerLayer
+----
