@@ -269,7 +269,7 @@ RETURN
 
 [[spring-component:Component]]
 [source,cypher,role=concept,requiresConcepts="spring-mvc:Controller,spring-mvc:Service,spring-data:Repository"]
-.Creates a USES relation between Spring components.
+.Reports all Spring components.
 ----
 MATCH
   (component:Spring:Component)

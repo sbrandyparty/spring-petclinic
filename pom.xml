@@ -43,7 +43,7 @@
 
         <!-- jQAssistant and asciidoctor -->
         <jqassistant.version>1.3.0</jqassistant.version>
-        <asciidoctor.version>1.5.3</asciidoctor.version>
+        <asciidoctor.version>1.5.5</asciidoctor.version>
     </properties>
 
     <dependencyManagement>
