@@ -92,6 +92,11 @@ public class Pet extends NamedEntity {
         if (this.visits == null) {
             this.visits = new HashSet<>();
         }
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return this.visits;
     }
 
