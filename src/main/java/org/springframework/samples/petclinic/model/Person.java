@@ -20,6 +20,8 @@ import javax.persistence.MappedSuperclass;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import org.apache.commons.lang3.builder.*;
+
 /**
  * Simple JavaBean domain object representing an person.
  *
@@ -52,5 +54,9 @@ public class Person extends BaseEntity {
         this.lastName = lastName;
     }
 
-
+    //Error
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, new RecursiveToStringStyle()).toString();
+    }
 }

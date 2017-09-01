@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.model;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.swing.*;
 
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -63,6 +65,8 @@ public class Pet extends NamedEntity {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
     private Set<Visit> visits;
+
+    private Image picture;
 
     public LocalDate getBirthDate() {
         return this.birthDate;
@@ -115,4 +119,11 @@ public class Pet extends NamedEntity {
         visit.setPet(this);
     }
 
+    public void setPicture() {
+        this.picture = new ImageIcon("..\\..\\..\\..\\..\\..\\..\\..\\assets\\chihuahua-dog-puppy-cute-39317.jpeg").getImage();
+    }
+
+    public void Pet() {
+        this.setPicture();
+    }
 }

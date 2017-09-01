@@ -26,6 +26,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import org.apache.commons.lang3.builder.*;
+
+
 /**
  * Simple JavaBean domain object representing a visit.
  *
@@ -120,4 +123,9 @@ public class Visit extends BaseEntity {
         this.pet = pet;
     }
 
+    //Error
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, new RecursiveToStringStyle()).toString();
+    }
 }

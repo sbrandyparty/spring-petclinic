@@ -27,8 +27,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.validation.Valid;
-
 import java.util.Collection;
 
 /**
@@ -37,6 +37,7 @@ import java.util.Collection;
  * @author Arjen Poutsma
  */
 @Controller
+@ApplicationScoped
 @RequestMapping("/owners/{ownerId}")
 public class PetController {
 

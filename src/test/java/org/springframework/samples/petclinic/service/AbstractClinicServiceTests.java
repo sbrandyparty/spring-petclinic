@@ -133,6 +133,7 @@ public abstract class AbstractClinicServiceTests {
         int found = owner6.getPets().size();
 
         Pet pet = new Pet();
+        //pet.setPicture();
         pet.setName("bowser");
         Collection<PetType> types = this.clinicService.findPetTypes();
         pet.setType(EntityUtils.getById(types, PetType.class, 2));

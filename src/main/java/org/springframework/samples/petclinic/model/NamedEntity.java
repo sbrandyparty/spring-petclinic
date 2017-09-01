@@ -18,6 +18,8 @@ package org.springframework.samples.petclinic.model;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
+import org.apache.commons.lang3.builder.*;
+
 
 /**
  * Simple JavaBean domain object adds a name property to <code>BaseEntity</code>. Used as a base class for objects
@@ -40,9 +42,14 @@ public class NamedEntity extends BaseEntity {
         this.name = name;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return this.getName();
-    }
+    }*/
 
+    //Error
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, new RecursiveToStringStyle()).toString();
+    }
 }

@@ -25,6 +25,8 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.repository.PetRepository;
 import org.springframework.stereotype.Repository;
 
+import com.rits.cloning.Cloner;
+
 /**
  * JPA implementation of the {@link PetRepository} interface.
  *
@@ -48,7 +50,11 @@ public class JpaPetRepositoryImpl implements PetRepository {
 
     @Override
     public Pet findById(int id) {
-        return this.em.find(Pet.class, id);
+        //Error
+        Cloner cloner=new Cloner();
+        Pet clone=cloner.deepClone(this.em.find(Pet.class, id));
+
+        return clone;
     }
 
     @Override
