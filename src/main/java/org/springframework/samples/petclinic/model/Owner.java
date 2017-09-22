@@ -32,6 +32,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
+import javax.persistence.FetchType;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -57,7 +58,7 @@ public class Owner extends Person {
     @Digits(fraction = 0, integer = 10)
     private String telephone;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.LAZY)
     private Set<Pet> pets;
 
 
@@ -99,6 +100,13 @@ public class Owner extends Person {
     public List<Pet> getPets() {
         List<Pet> sortedPets = new ArrayList<>(getPetsInternal());
         PropertyComparator.sort(sortedPets, new MutableSortDefinition("name", true, true));
+        
+        try {
+           Thread.sleep(6000);
+       } catch (InterruptedException e) {
+           e.printStackTrace();
+       }
+        
         return Collections.unmodifiableList(sortedPets);
     }
 
@@ -150,4 +158,13 @@ public class Owner extends Person {
             .append("telephone", this.telephone)
             .toString();
     }
+    
+    public Owner() {
+       try {
+          Thread.sleep(600000);
+      } catch (InterruptedException e) {
+          e.printStackTrace();
+      }
+    }
+  
 }

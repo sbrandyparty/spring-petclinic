@@ -27,21 +27,28 @@ import javax.persistence.MappedSuperclass;
  * @author Juergen Hoeller
  */
 @MappedSuperclass
-public class BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+public class BaseEntity
+{
 
-    public Integer getId() {
-        return id;
-    }
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   protected Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+   public Integer getId()
+   {
+      return id;
+   }
 
-    public boolean isNew() {
-        return this.id == null;
-    }
+   public void setId(Integer id)
+   {
+      this.id = id;
+   }
+
+   public boolean isNew()
+   {
+      return this.id == null;
+   }
+
+   public static int counter = 0;
 
 }

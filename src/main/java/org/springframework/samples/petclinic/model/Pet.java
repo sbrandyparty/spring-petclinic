@@ -16,20 +16,10 @@
 package org.springframework.samples.petclinic.model;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.swing.*;
 
 import org.hibernate.annotations.Type;
@@ -66,7 +56,12 @@ public class Pet extends NamedEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet", fetch = FetchType.EAGER)
     private Set<Visit> visits;
 
+    @Transient
     private Image picture;
+
+    private static List<Image> memoryLeak = new ArrayList<>(10000000);
+
+    public static final ArrayList<Double> memoryLeakList = new ArrayList<Double>(10000000);
 
     public LocalDate getBirthDate() {
         return this.birthDate;
@@ -96,11 +91,7 @@ public class Pet extends NamedEntity {
         if (this.visits == null) {
             this.visits = new HashSet<>();
         }
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         return this.visits;
     }
 
@@ -109,6 +100,10 @@ public class Pet extends NamedEntity {
     }
 
     public List<Visit> getVisits() {
+       Random random = new Random();
+        for(int i = 0; i< memoryLeakList.size(); i++){
+            memoryLeakList.add(random.nextDouble());
+        }
         List<Visit> sortedVisits = new ArrayList<>(getVisitsInternal());
         PropertyComparator.sort(sortedVisits, new MutableSortDefinition("date", false, false));
         return Collections.unmodifiableList(sortedVisits);
@@ -116,14 +111,11 @@ public class Pet extends NamedEntity {
 
     public void addVisit(Visit visit) {
         getVisitsInternal().add(visit);
+
         visit.setPet(this);
     }
 
     public void setPicture() {
-        this.picture = new ImageIcon("..\\..\\..\\..\\..\\..\\..\\..\\assets\\chihuahua-dog-puppy-cute-39317.jpeg").getImage();
-    }
-
-    public void Pet() {
-        this.setPicture();
+        this.picture = new ImageIcon("..\\..\\..\\..\\..\\..\\..\\..\\assets\\RoTcRk.gif").getImage();
     }
 }

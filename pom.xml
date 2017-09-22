@@ -275,31 +275,6 @@
         <artifactId>cdi-api</artifactId>
         <version>1.0</version>
     </dependency>
-    <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>1.0</version>
-    </dependency>
     <!-- Cloning Brandyparty -->
     <dependency>
         <groupId>uk.com.robust-it</groupId>
@@ -312,12 +287,30 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.6</version>
     </dependency>
+    <!-- fix bs
     <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.6</version>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate</artifactId>
+        <version>3.2.7.ga</version>
+        <type>jar</type>
+        <scope>provided</scope>
     </dependency>
-
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>4.3.11.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>4.3.11.Final</version>
+    </dependency>-->
+    <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/findbugs-maven-plugin -->
+    <dependency>
+        <groupId>de.kontext-e.jqassistant.plugin</groupId>
+        <artifactId>jqassistant.plugin.findbugs</artifactId>
+        <version>1.2.0</version>
+    </dependency>
 </dependencies>
 
 <!-- Maven plugin versions are mentioned in order to guarantee the build reproducibility in the long term -->
@@ -428,6 +421,12 @@
                 </execution>
             </executions>
         </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>3.0.5</version>
+        </plugin>
+
 
         <!-- jQAssistant -->
         <plugin>
@@ -468,13 +467,7 @@
                 </store>
             </configuration>
             -->
-            <dependencies>
-                <dependency>
-                    <groupId>de.kontext-e.jqassistant.plugin</groupId>
-                    <artifactId>jqassistant.plugin.git</artifactId>
-                    <version>1.2.0</version>
-                </dependency>
-            </dependencies>
+
         </plugin>
         <!-- Asciidoctor -->
         <plugin>
@@ -530,6 +523,11 @@
                     </reports>
                 </reportSet>
             </reportSets>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>3.0.5</version>
         </plugin>
         <plugin>
             <groupId>com.buschmais.jqassistant</groupId>
